@@ -44,6 +44,12 @@ class TestSistemaEstoque(unittest.TestCase):
         self.assertFalse(resultado)
         self.assertEqual(estoque["Cafe"]["quantidade"], 5)
 
+    def test_cadastrar_produto_sem_nome(self):
+        resultado = cadastrar_produto("   ", 10, 25.0)
+
+        self.assertFalse(resultado)
+        self.assertEqual(len(estoque), 0)
+
 
 if __name__ == "__main__":
     unittest.main()
