@@ -3,6 +3,9 @@ estoque = {}
 
 
 def cadastrar_produto(nome, quantidade, preco):
+    if not nome.strip():
+        return False
+
     if nome in estoque or quantidade < 0 or preco < 0:
         return False
 
