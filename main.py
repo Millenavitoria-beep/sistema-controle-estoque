@@ -1,70 +1,39 @@
 
 estoque = {}
 
-def cadastrar_produto():
-    nome = input("Nome do produto: ").strip()
 
-    if nome in estoque:
-        print("Esse produto já está cadastrado!")
-        return
+def cadastrar_produto(nome, quantidade, preco):
+    if nome in estoque or quantidade < 0 or preco < 0:
+        return False
 
-    quantidade = int(input("Quantidade inicial: "))
-    preco = float(input("Preço do produto: R$ "))
     estoque[nome] = {
         "quantidade": quantidade,
         "preco": preco
     }
-
-    print("Produto cadastrado com sucesso!")
+    return True
 
 
 def consultar_estoque():
-    if not estoque:
-        print("Nenhum produto cadastrado.")
-        return
-
-    print("\n--- ESTOQUE ATUAL ---")
-
-    for nome, dados in estoque.items():
-        print(f"Produto: {nome}")
-        print(f"Quantidade: {dados['quantidade']}")
-        print(f"Preço: R$ {dados['preco']:.2f}")
-
-        if dados["quantidade"] <= 5:
-            print("ALERTA: Estoque baixo!")
-
-        print("--------------------")
+    return estoque
 
 
-def registrar_entrada():
-    nome = input("Nome do produto: ").strip()
+def registrar_entrada(nome, quantidade):
+    if nome not in estoque or quantidade <= 0:
+        return False
 
-    if nome not in estoque:
-        print("Produto não encontrado!")
-        return
-
-    quantidade = int(input("Quantidade de entrada: "))
     estoque[nome]["quantidade"] += quantidade
+    return True
 
-    print("Entrada registrada com sucesso!")
 
-
-def registrar_saida():
-    nome = input("Nome do produto: ").strip()
-
-    if nome not in estoque:
-        print("Produto não encontrado!")
-        return
-
-    quantidade = int(input("Quantidade de saída: "))
+def registrar_saida(nome, quantidade):
+    if nome not in estoque or quantidade <= 0:
+        return False
 
     if quantidade > estoque[nome]["quantidade"]:
-        print("Quantidade insuficiente no estoque!")
-        return
+        return False
 
     estoque[nome]["quantidade"] -= quantidade
-    print("Saída registrada com sucesso!")
-
+    return True
 
 
 def menu():
@@ -79,18 +48,40 @@ def menu():
         opcao = input("Escolha uma opção: ")
 
         if opcao == "1":
-            cadastrar_produto()
+            nome = input("Nome do produto: ")
+            quantidade = int(input("Quantidade: "))
+            preco = float(input("Preço: R$ "))
+            if cadastrar_produto(nome, quantidade, preco):
+                print("Produto cadastrado com sucesso!")
+            else:
+                print("Não foi possível cadastrar o produto.")
+
         elif opcao == "2":
-            consultar_estoque()
+            for nome, dados in consultar_estoque().items():
+                print(nome, dados)
+
         elif opcao == "3":
-            registrar_entrada()
+            nome = input("Nome do produto: ")
+            quantidade = int(input("Quantidade de entrada: "))
+            if registrar_entrada(nome, quantidade):
+                print("Entrada registrada!")
+            else:
+                print("Não foi possível registrar a entrada.")
+
         elif opcao == "4":
-            registrar_saida()
+            nome = input("Nome do produto: ")
+            quantidade = int(input("Quantidade de saída: "))
+            if registrar_saida(nome, quantidade):
+                print("Saída registrada!")
+            else:
+                print("Não foi possível registrar a saída.")
+
         elif opcao == "5":
             print("Sistema encerrado!")
             break
+
         else:
-            print("Opção inválida. Tente novamente.")
+            print("Opção inválida!")
 
 
 if __name__ == "__main__":
