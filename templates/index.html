@@ -1,0 +1,159 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle de Estoque</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            color: #1e293b;
+            margin: 0;
+            padding: 25px;
+        }
+
+        .container {
+            max-width: 950px;
+            margin: auto;
+        }
+
+        h1 {
+            color: #1e3a5f;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            margin: 18px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px #0001;
+        }
+
+        input, select, button {
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #cbd5e1;
+            border-radius: 5px;
+        }
+
+        button {
+            background: #1e3a5f;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #315b89;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .mensagem {
+            background: #dbeafe;
+            padding: 12px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+
+        .alto-contraste {
+            background: black;
+            color: white;
+        }
+
+        .alto-contraste .card {
+            background: #222;
+            color: white;
+        }
+
+        .alto-contraste h1 {
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <h1>Sistema de Controle de Estoque</h1>
+    <p>Gerencie seus produtos, entradas e saídas.</p>
+
+    {% with mensagens = get_flashed_messages() %}
+        {% for mensagem in mensagens %}
+            <div class="mensagem">{{ mensagem }}</div>
+        {% endfor %}
+    {% endwith %}
+
+    <div class="card">
+        <h2>Cadastrar produto</h2>
+        <form action="/cadastrar" method="POST">
+            <input name="nome" placeholder="Nome do produto" required>
+            <input name="quantidade" type="number" min="0" placeholder="Quantidade" required>
+            <input name="preco" type="number" min="0" step="0.01" placeholder="Preço" required>
+            <button type="submit">Cadastrar</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h2>Registrar entrada</h2>
+        <form action="/entrada" method="POST">
+            <select name="nome" required>
+                <option value="">Selecione o produto</option>
+                {% for nome in estoque %}
+                    <option value="{{ nome }}">{{ nome }}</option>
+                {% endfor %}
+            </select>
+            <input name="quantidade" type="number" min="1" placeholder="Quantidade" required>
+            <button type="submit">Registrar entrada</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h2>Registrar saída</h2>
+        <form action="/saida" method="POST">
+            <select name="nome" required>
+                <option value="">Selecione o produto</option>
+                {% for nome in estoque %}
+                    <option value="{{ nome }}">{{ nome }}</option>
+                {% endfor %}
+            </select>
+            <input name="quantidade" type="number" min="1" placeholder="Quantidade" required>
+            <button type="submit">Registrar saída</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h2>Estoque disponível</h2>
+        <table>
+            <tr>
+                <th>Produto</th>
+                <th>Quantidade</th>
+                <th>Preço</th>
+            </tr>
+            {% for nome, dados in estoque.items() %}
+            <tr>
+                <td>{{ nome }}</td>
+                <td>{{ dados.quantidade }}</td>
+                <td>R$ {{ "%.2f"|format(dados.preco) }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <button onclick="document.body.classList.toggle('alto-contraste')">
+        Ativar/desativar alto contraste
+    </button>
+
+</div>
+</body>
+</html>
